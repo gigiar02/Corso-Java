@@ -2,6 +2,13 @@ import java.util.Scanner;
 
 //Contiene esempi sviluppati durante la prima lezione del corso in java!
 public class Utility {
+    enum COLOR
+    {
+        RED,
+        YELLOW,
+        BLUE,
+
+    }
 
     Scanner input = new Scanner(System.in);
 
@@ -13,9 +20,12 @@ public class Utility {
 
 
     public void saluta() {
-        String saluto = input.nextLine();
-        System.out.println("Saluta ");
-        System.out.println(saluto);
+        System.out.println("Ciao " + leggiStringa("Salutami"));
+    }
+
+    public void saluta(String message)
+    {
+        System.out.println("Ciao " + leggiStringa("Salutami" + message));
     }
 
 
@@ -35,13 +45,24 @@ public class Utility {
 
     }
 
+    public  void stampaVerticale(int limiteMassimo) {
+        if(limiteMassimo < 1) {
+
+            System.out.println("Limite massimo non positivo");
+            return;
+        }
+
+        for(int i = 1; i < limiteMassimo; i++)
+            System.out.println(i);
+    }
+
+
     //Legge un numero e lo restituisce
     public int leggiNumero(String s) {
         System.out.println(s);
-        int scelta = input.nextInt();
-        return scelta;
-
+        return Integer.parseInt(input.nextLine());
     }
+
 
     //Legge una stringa e la restituisce
     public  String leggiStringa(String s)
@@ -60,20 +81,23 @@ public class Utility {
         int somma = 0;
         float media = 0;
         int numero = 0;
-
+        int minimo = (int) Double.POSITIVE_INFINITY;
+        int massimo = (int) -Double.POSITIVE_INFINITY;
+        String numeri = "";
         do
         {
             int num = this.leggiNumero("Scegli un numero");
             numero++;
             somma += num;
-            System.out.println("Vuoi continuare?");
-            input.nextLine();
-            scelta = input.nextLine();
+            numeri += Integer.toString(num) + " ";
+            if(num < minimo) minimo = num;
+            if(num > massimo) massimo = num;
 
-        }while(scelta.equals("S") || scelta.equals("s"));
+        }while(this.leggiStringa("Vuoi continuare?").equals("s"));
 
         media = (float) somma / numero;
-        System.out.println("Il numero di elementi è " + numero + " La somma è " + somma  +  " La media è " + media);
+        System.out.println("Il numero di elementi è " + numero + " La somma è " + somma  +  " La media è " + media + "numeri inseriti: " + numeri);
+        System.out.println("Il massimo è " + massimo + "il minimo è " + minimo);
     }
 
     //Verifica che due stringhe siano uguali
@@ -100,5 +124,53 @@ public class Utility {
             default:
                 System.out.println("non sei al semaforo");
         }
+    }
+
+    public  void occorrenzeVocaliConsonanti(String frase)
+    {
+        System.out.println(frase.charAt(0));
+
+        int vocali = 0; int consonanti = 0;
+        frase = frase.toLowerCase();
+
+        for(int i = 0; i < frase.length(); i++)
+        {
+            if(frase.charAt(i) == 'a' || frase.charAt(i) == 'e' || frase.charAt(i) == 'i' || frase.charAt(i) == 'o' || frase.charAt(i) == 'u')
+            {
+                vocali+=1;
+            }else if(frase.charAt(i) > 'a' && frase.charAt(i) <= 'z')
+            {
+                consonanti+=1;
+            }
+        }
+
+        System.out.println("Vocali = " + vocali + "Consonanti = " + consonanti);
+    }
+
+    public  int menu()
+    {
+        System.out.println("Avvio");
+        System.out.println("1 StampaVerticale");
+        System.out.println("2 StampaOrizzontale");
+        System.out.println("3 saluta");
+        System.out.println("4 Semaforo");
+        System.out.println("5 Totalizzatore");
+        System.out.println("6 esci");
+
+        int leggi = leggiNumero("Fai la tua scelta");
+        return  leggi;
+    }
+
+    //Restituisce il valore totale in ASCII della frase
+    public int calcolaASCII(String frase)
+    {
+        int somma = 0;
+        for(int i = 0; i < frase.length(); i++)
+        {
+            somma += frase.charAt(i);
+            System.out.println((int) frase.charAt(i));
+        }
+        return somma;
+
     }
 }
