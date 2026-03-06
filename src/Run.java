@@ -64,6 +64,12 @@ public class Run {
                     utils.printMatrix(mat);
                     break;
 
+                case 16:
+                    double[][] meteo = utils.initDMat();
+                    utils.printMatrix(meteo);
+                    int[] moda = utils.calcolaModa(meteo);
+                    utils.stampaModa(moda);
+                    break;
             }
 
 

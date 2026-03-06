@@ -6,15 +6,9 @@ import static java.util.Collections.swap;
 
 //Contiene esempi sviluppati durante la prima lezione del corso in java!
 public class Utility {
-    enum COLOR
-    {
-        RED,
-        YELLOW,
-        BLUE,
-
-    }
 
     Scanner input = new Scanner(System.in);
+    Random random = new Random();
 
     //Effettua la somma tra due numeri
     public void somma(int a,int b) {
@@ -610,6 +604,21 @@ public class Utility {
         arr[i] = arr[j];
         arr[j] = appoggio;
     }
+
+    public int trovaMassimo(int[] arr)
+    {
+        int indiceMassimo = 0;
+        for(int i = 0; i < arr.length; i++)
+        {
+            if(arr[i] > arr[indiceMassimo])
+            {
+                indiceMassimo = i;
+            }
+        }
+
+        return indiceMassimo;
+
+    }
     //Per ogni riga voglio il massimo ed eseguire lo scambio se necessario con la prima posizione. Se si trova già nella prima pos. non fare lo scambio
     //Stampa la matrice
     public void valoreMaxMatrice(int[][] mat)
@@ -617,21 +626,14 @@ public class Utility {
 
         for(int i = 0; i < mat.length;i++)
         {
-            int massimo = Integer.MIN_VALUE;
-            int maxIndex = 0;
-            for(int j = 0; j < mat[0].length;j++)
-            {
-                if(massimo < mat[i][j]){massimo = mat[i][j]; maxIndex = j;}
-            }
+            int indiceMassimo = trovaMassimo(mat[i]);
 
-            if(maxIndex != 0)
+            //Sostituisce con la prima posizione
+            if(indiceMassimo != 0)
             {
-                makeSwap(mat[i],0,maxIndex);
+                makeSwap(mat[i],0,mat[i][indiceMassimo]);
             }
-
         }
-
-
     }
 
     public void printMatrix(int[][] mat)
@@ -644,6 +646,125 @@ public class Utility {
                 System.out.print(mat[i][j] + " ");
             }
             System.out.println(" ");
+        }
+    }
+    public void printMatrix(double[][] mat)
+    {
+        String[] giorni = {"Lunedi","Martedi","Mercoledi","Giovedi","Venerdi","Sabato","Domenica"};
+        String[] orario = {"06:00","12:00","18:00","24:00"};
+
+
+        System.out.printf("%15s","");
+        for(int i = 0; i < 4; i++)
+        {
+            System.out.printf("%15s",orario[i]);
+        }
+        System.out.printf("%n");
+        for(int i = 0; i < mat.length;i++)
+        {
+            System.out.printf("%15s",giorni[i]);
+            for(int j = 0; j < mat[0].length;j++)
+            {
+                System.out.printf("%15.2f",mat[i][j]);
+            }
+            System.out.println(" ");
+        }
+    }
+
+
+    //Geerare una matrice di randomici double
+    /*
+    [-10 / 45]
+               6:00 12:00 18:00 24:00
+        Lunedi  10   25    60    7
+        Martedi
+        Mercoledi
+        Giovedi
+        Venerdi
+        Sabato
+        Domenica
+
+        Arrotondare per eccesso
+     */
+    //Printf(); Arrotondare per eccesso Sbalzo termico nella stessa giornata +-5 gradi
+
+
+
+    public double[] calcolaIntorno(double i,double variazione)
+    {
+        return new double[]{i - variazione, i + variazione};
+    }
+
+    public double calcolaTemperatura(double temperatura,double variazione)
+    {
+        //Calcolo l'intorno da prendere in considerazione
+        double[] intorno = calcolaIntorno(temperatura,variazione);
+
+        //Verifico che sia corretto
+        if(intorno[0] < -10){intorno[0] = -10;}
+        if(intorno[1] > 45){intorno[1] = 45;}
+
+        //Restiuisco il numero casuale nell'intorno
+        return random.nextDouble(intorno[0],intorno[1] + 1);
+    }
+
+
+    //Inizializza meteo
+    public double[][] initDMat()
+    {
+        double[][] mat = new  double[7][4];
+        double variazioneMassima = 5;
+
+        //temperaturaDiRiferimento è una variabile utilizzata per tenere traccia del numero precedente.
+        //All'inizio qualsiasi numero casuale nell'intervallo [-10,45] è accettato
+
+        for(int i = 0; i < mat.length;i++)
+        {
+            double temperaturaDiRiferimento = random.nextDouble(-10,46);
+            mat[i][0] = temperaturaDiRiferimento;
+            for(int j = 1; j < mat[0].length;j++)
+            {
+                //L'intervallo dei numeri casuali accettati è [-10,45]
+                //Un numero può variarare dal suo precedente di massimo +- 5/10
+                temperaturaDiRiferimento = calcolaTemperatura(temperaturaDiRiferimento,variazioneMassima);
+                mat[i][j] = temperaturaDiRiferimento;
+            }
+        }
+
+        return mat;
+    }
+
+    //Verificare la temperatura che si presenta con piu frequenza(intera) nella settimana
+    public  int[] calcolaModa(double[][] settimana)
+    {
+        int[] moda = new int[56];
+
+        for(int i = 0; i < settimana.length;i++)
+        {
+            for(int j = 0; j < settimana[0].length;j++)
+            {
+                //-8 5 5 6
+                //7  7 1 3
+                moda[(int) settimana[i][j] + 10]++;
+            }
+        }
+
+        int index = trovaMassimo(moda) - 10;
+        System.out.println("La temperatura che si ripete piu volte è  " + index);
+
+        return moda;
+    }
+
+
+
+
+    public void stampaModa(int[] moda)
+    {
+        for(int i = 0; i < moda.length;i++)
+        {
+            //Stampo solo i valori che sono >=0
+            System.out.println(i - 10 + " = " + moda[i]);
+
         }
     }
 
