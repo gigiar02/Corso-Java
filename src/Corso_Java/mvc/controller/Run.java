@@ -26,7 +26,6 @@ public class Run {
                 //Visualizza tutte le persone inserite
                 case 2:
                     view.printAll(serv.getAll());
-                    view.printAll(serv.getAll());
                     break;
 
                 default:
