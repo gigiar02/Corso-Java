@@ -1,8 +1,7 @@
-import java.util.Arrays;
+package Corso_Java.helloWorld;
+
 import java.util.Random;
 import java.util.Scanner;
-
-import static java.util.Collections.swap;
 
 //Contiene esempi sviluppati durante la prima lezione del corso in java!
 public class Utility {
@@ -744,7 +743,6 @@ public class Utility {
             for(int j = 0; j < settimana[0].length;j++)
             {
                 //-8 5 5 6
-                //7  7 1 3
                 moda[(int) settimana[i][j] + 10]++;
             }
         }
