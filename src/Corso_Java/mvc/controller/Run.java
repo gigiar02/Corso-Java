@@ -14,15 +14,17 @@ public class Run {
         {
             switch (view.menu("Scegli un'operazione"))
             {
+                //Esci
                 case 0:
                     return;
 
-                //Inserisci una persona prova
+                //Inserisci una persona
                 case 1:
                     Persona p = new Persona();
                     view.initForm(p);
                     view.print(serv.insert(p) ? "Persona inserita" + p:"Persona non inserita");
                     break;
+
                 //Visualizza tutte le persone inserite
                 case 2:
                     view.printAll(serv.getAll());
@@ -30,7 +32,7 @@ public class Run {
 
                 default:
                     view.print("Scelta non valida");
-                    view.print("Scelta non valida");
+
 
 
             }
