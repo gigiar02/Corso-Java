@@ -6,8 +6,7 @@ import Corso_Java.mvc.view.View;
 
 public class Run {
 
-    public static void main()
-    {
+     static void main() {
         PersonaService serv = new PersonaService();
         View view = new View();
 
@@ -18,7 +17,7 @@ public class Run {
                 case 0:
                     return;
 
-                //Inserisci una persona
+                //Inserisci una persona prova
                 case 1:
                     Persona p = new Persona();
                     view.initForm(p);
@@ -26,6 +25,7 @@ public class Run {
                     break;
                 //Visualizza tutte le persone inserite
                 case 2:
+                    view.printAll(serv.getAll());
                     view.printAll(serv.getAll());
                     break;
 
