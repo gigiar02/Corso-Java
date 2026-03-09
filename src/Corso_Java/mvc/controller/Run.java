@@ -30,7 +30,6 @@ public class Run {
 
                 default:
                     view.print("Scelta non valida");
-                    view.print("Scelta non valida");
 
 
             }
