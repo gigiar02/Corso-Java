@@ -3,13 +3,15 @@ package Corso_Java.mvc.model;
 public class Persona {
     private String name;
     private String surname;
+    private String codiceFiscale;
     private int age;
 
     public Persona(){}
-    public Persona(String name, String surname,int age)
-    {
+
+    public Persona(String name, String surname, String codiceFiscale, int age) {
         this.name = name;
         this.surname = surname;
+        this.codiceFiscale = codiceFiscale;
         this.age = age;
     }
 
@@ -37,8 +39,19 @@ public class Persona {
         this.age = age;
     }
 
+    public String getCodiceFiscale(){return codiceFiscale;}
+
+    public void setCodiceFiscale(String codiceFiscale) {
+        this.codiceFiscale = codiceFiscale;
+    }
+
     @Override
     public String toString() {
-        return " name = " + name + " surname = " + surname + " age = " + age;
+        return " name = " + name + " surname = " + surname + " age = " + age + "codice fiscale: " + codiceFiscale;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 }

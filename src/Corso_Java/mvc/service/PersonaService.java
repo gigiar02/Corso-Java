@@ -10,10 +10,35 @@ public class PersonaService {
     PersonaRepository personaRepository = new PersonaRepository();
 
     //Inserimento di una persona nel database
-    public boolean insert(Persona p)
-    {
+    public boolean insert(Persona p) {
+
+        if(personaRepository.search(p.getCodiceFiscale()) != null)
+        {
+            System.out.println("Errore: Codice fiscale già esistente");
+            return  false;
+        }
         return personaRepository.insert(p);
     }
+
+    //Ricerca una persona nel database e la restituisce
+    public Persona search(String cf) { return personaRepository.search(cf);}
+    public int search(Persona p){return personaRepository.search(p);}
+    public Persona getPersona(int index){return personaRepository.getPersona(index);}
+
+    //Elimina una persona nel database
+    public boolean delete(Persona p) { return personaRepository.delete(p);}
+
+    public boolean update(Persona p,Persona pNew) {
+
+        if(search(pNew.getCodiceFiscale()) != null && !p.getCodiceFiscale().equals(pNew.getCodiceFiscale()))
+        {
+            return false;
+        }
+
+        personaRepository.update(p,pNew);
+        return true;
+    }
+
 
     //Ottieni tutte le persone presenti nel database
     public ArrayList<Persona> getAll()
