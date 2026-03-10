@@ -1,18 +1,24 @@
 package Corso_Java.mvc.model;
 
+import Corso_Java.mvc.utils.Utils;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
+
 public class Persona {
     private String name;
     private String surname;
     private String codiceFiscale;
-    private int age;
+    private LocalDate dataDiNascita;
 
     public Persona(){}
 
-    public Persona(String name, String surname, String codiceFiscale, int age) {
+    public Persona(String name, String surname, String codiceFiscale,LocalDate dataDiNascita) {
         this.name = name;
         this.surname = surname;
         this.codiceFiscale = codiceFiscale;
-        this.age = age;
+        this.dataDiNascita = dataDiNascita;
     }
 
     public String getName() {
@@ -31,27 +37,38 @@ public class Persona {
         this.surname = surname;
     }
 
-    public int getAge() {
-        return age;
+    public String getCodiceFiscale() {
+        return codiceFiscale;
     }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public String getCodiceFiscale(){return codiceFiscale;}
 
     public void setCodiceFiscale(String codiceFiscale) {
         this.codiceFiscale = codiceFiscale;
     }
 
-    @Override
-    public String toString() {
-        return " name = " + name + " surname = " + surname + " age = " + age + "codice fiscale: " + codiceFiscale;
+    public LocalDate getDataDiNascita() {
+        return dataDiNascita;
+    }
+
+    public void setDataDiNascita(LocalDate dataDiNascita) {
+        this.dataDiNascita = dataDiNascita;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
+    public String toString() {
+        return " name = " + name + " surname = " + surname +  "codice fiscale: " + codiceFiscale + " data di nascita: " + Utils.formatter(dataDiNascita) + " età: " + Utils.calcolaEta(dataDiNascita);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Persona persona = (Persona) o;
+        return Objects.equals(getName(), persona.getName()) && Objects.equals(getSurname(), persona.getSurname()) && Objects.equals(getCodiceFiscale(), persona.getCodiceFiscale()) && Objects.equals(getDataDiNascita(), persona.getDataDiNascita());
+    }
+
+
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getSurname(), getCodiceFiscale(), getDataDiNascita());
     }
 }

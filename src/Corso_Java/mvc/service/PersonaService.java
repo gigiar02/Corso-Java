@@ -1,5 +1,6 @@
 package Corso_Java.mvc.service;
 
+import Corso_Java.mvc.exception.CfException;
 import Corso_Java.mvc.model.Persona;
 import Corso_Java.mvc.model.PersonaRepository;
 
@@ -15,9 +16,12 @@ public class PersonaService {
         if(personaRepository.search(p.getCodiceFiscale()) != null)
         {
             System.out.println("Errore: Codice fiscale già esistente");
-            return  false;
+            throw  new CfException("Codice fiscale già esistente!");
+
         }
-        return personaRepository.insert(p);
+
+        personaRepository.insert(p);
+        return true;
     }
 
     //Ricerca una persona nel database e la restituisce
