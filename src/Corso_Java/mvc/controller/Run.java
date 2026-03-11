@@ -9,12 +9,13 @@ import Corso_Java.mvc.view.View;
 
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.zip.DataFormatException;
 
 public class Run {
 
-     static void main() {
-        PersonaService serv = new PersonaService();
+     static void main() {PersonaService serv = new PersonaService();
         View view = new View();
         Persona p;
 
