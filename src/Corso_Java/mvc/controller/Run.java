@@ -1,17 +1,14 @@
 package Corso_Java.mvc.controller;
 
-import Corso_Java.mvc.exception.CfException;
 import Corso_Java.mvc.exception.EtaException;
 import Corso_Java.mvc.exception.RegexStringException;
+import Corso_Java.mvc.utils.MakeEntity;
 import Corso_Java.mvc.model.Persona;
 import Corso_Java.mvc.service.PersonaService;
+import Corso_Java.mvc.utils.Utils;
 import Corso_Java.mvc.view.View;
 
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.zip.DataFormatException;
 
 public class Run {
 
@@ -31,7 +28,8 @@ public class Run {
                     case 1:
                         String msg = "";
 
-                        p = new Persona();
+                        p = MakeEntity.GetEntity(view.menuInserimento("Inserisci il tipo di entità che vuoi aggiungere"));
+
                         view.initForm(p);
                         msg = serv.insert(p) ? "Persona inserita" + p : "Persona non inserita";
 
@@ -68,15 +66,15 @@ public class Run {
 
                     //Modifica
                     case 5:
-                        //Ricerco la persona
-                        p = serv.search(view.readString("Inserisci il codice fiscale della persona da modificare"));
+                        //Ricerco l' entità
+                        p = serv.search(view.readString("Inserisci il codice fiscale dell' entità da modificare"));
                         if (p == null) {
-                            view.print("Persona non trovata");
+                            view.print("Entità non trovata");
                             break;
                         }
 
-                        //Form update riceve la vecchia copia di persona e quella nuova. Restituisce la nuova copia o null
-                        Persona newP = new Persona();
+                        //Form update riceve la vecchia copia di entità e quella nuova. Restituisce la nuova copia o null
+                        Persona newP = MakeEntity.GetEntity(p);
                         newP = view.formUpdate(p, newP);
 
                         //formUpdate restiuisce null se l'utente annulla la modifica della persona

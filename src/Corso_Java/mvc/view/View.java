@@ -1,21 +1,19 @@
 package Corso_Java.mvc.view;
 
+import Corso_Java.mvc.Enumerazioni.Entities;
 import Corso_Java.mvc.exception.EtaException;
 import Corso_Java.mvc.exception.RegexStringException;
+import Corso_Java.mvc.model.Dipendente;
+import Corso_Java.mvc.model.Manager;
 import Corso_Java.mvc.model.Persona;
-import Corso_Java.mvc.service.PersonaService;
-import Corso_Java.mvc.utils.Constants;
 import Corso_Java.mvc.utils.Utils;
 import Corso_Java.mvc.utils.Constants.Regex;
 
-import javax.xml.transform.Templates;
 import java.time.LocalDate;
-import java.time.Period;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Formatter;
-import java.util.Locale;
-import java.util.Scanner;
+import java.util.*;
+
+import static Corso_Java.mvc.Enumerazioni.Entities.*;
 
 public class View {
     private Scanner scanner = new Scanner(System.in);
@@ -86,6 +84,12 @@ public class View {
        return Integer.parseInt(scanner.nextLine());
     }
 
+    public double readDouble(String s)
+    {
+        System.out.println(s);
+        return Double.parseDouble(scanner.nextLine());
+    }
+
 
     //Inizializza il form di Persona
     public void initForm(Persona p) throws RegexStringException, EtaException {
@@ -93,6 +97,20 @@ public class View {
         p.setSurname(readStringRegex("Insert the surname"));
         p.setDataDiNascita(readDataDiNascita("Insert the data di nascita: dd--MM-yyyy"));
         p.setCodiceFiscale(readStringRegex("Insert the codiceFiscale"));
+
+        if(p instanceof Manager)
+        {
+            Manager m = (Manager) p;
+            m.setStipendio(readDouble("Inserisci lo stipendio"));
+            m.setBonus(readDouble("Inserisci il bonus del Manager"));
+            m.setDataDiAssunzione(readDataDiNascita("Inserisci la data di assunzione"));
+            m.setTipoRuolo(Utils.getRuolo(readString("Inserisci il ruolo")));
+        }else if(p instanceof Dipendente)
+        {
+            Dipendente d = (Dipendente) p;
+            d.setDataDiAssunzione(readDataDiNascita("Inserisci la data di assunzione"));
+            d.setStipendio(readDouble("Inserisci lo stipendio"));
+        }
     }
 
 
@@ -105,31 +123,48 @@ public class View {
     public int menu(String s)
     {
         System.out.println("0 - ESCI");
-        System.out.println("1 - Inserisci una persona");
-        System.out.println("2 - Visualizza tutte le persone");
-        System.out.println("3 - Ricerca una persona fornendo il suo codice fiscale");
-        System.out.println("4 - Elimina una persona fornendo il suo codice fiscale");
+        System.out.println("1 - Inserisci un' entità");
+        System.out.println("2 - Visualizza tutte le entità");
+        System.out.println("3 - Ricerca un' entità fornendo il suo codice fiscale");
+        System.out.println("4 - Elimina un' entità fornendo il suo codice fiscale");
         System.out.println("5 - Effettua una modifica");
 
         return readInteger(s);
     }
 
 
-    public void printAll(ArrayList<Persona> persone)
+    public Entities menuInserimento(String s)
     {
-        if(persone.isEmpty())
+        System.out.println("PERSONA");
+        System.out.println("DIPENDENTE");
+        System.out.println("MANAGER");
+
+        switch (readString("Inserisci il tipo di entità che vuoi inserire").toUpperCase()){
+            case "PERSONA" : return PERSONA;
+            case "DIPENDENTE" : return DIPENDENTE;
+            case "MANAGER" : return MANAGER;
+            default: return NONVALIDO;
+        }
+    }
+
+
+    public void printAll(HashMap<Integer,Persona> entity)
+    {
+        if(entity.isEmpty())
         {
             System.out.println("Lista vuota");
             return;
         }
-        for(Persona p : persone)
+        for(Map.Entry<Integer,Persona> e : entity.entrySet())
         {
-            System.out.println(p);
+
+            System.out.println(Utils.getTypeOfEntity(e.getValue()) + " " +  e.getValue());
         }
     }
 
 
     //Permette all'utente di modificare uno piu campi della persona "p" restiuendo la nuova persona modificata "newP"
+    //TODO:MODIFICARE TUTTO
     public Persona formUpdate(Persona p,Persona newP) throws RegexStringException, EtaException {
         //Preparazione dati
         String[] label = new String[]{"name ","surname","codice fiscale","data di nascita"};

@@ -11,8 +11,12 @@ public class Persona {
     private String surname;
     private String codiceFiscale;
     private LocalDate dataDiNascita;
+    private static int  GlobalID;
+    private int id;
 
-    public Persona(){}
+    public Persona(){
+        id = GlobalID++;
+    }
 
     public Persona(String name, String surname, String codiceFiscale,LocalDate dataDiNascita) {
         this.name = name;
@@ -55,7 +59,7 @@ public class Persona {
 
     @Override
     public String toString() {
-        return " name = " + name + " surname = " + surname +  "codice fiscale: " + codiceFiscale + " data di nascita: " + Utils.formatter(dataDiNascita) + " età: " + Utils.calcolaEta(dataDiNascita);
+        return getID() + " name: " + name + " surname: " + surname +  "codice fiscale: " + codiceFiscale + " data di nascita: " + Utils.formatter(dataDiNascita) + " età: " + Utils.calcolaEta(dataDiNascita);
     }
 
     @Override
@@ -70,5 +74,9 @@ public class Persona {
     @Override
     public int hashCode() {
         return Objects.hash(getName(), getSurname(), getCodiceFiscale(), getDataDiNascita());
+    }
+
+    public int getID() {
+        return id;
     }
 }

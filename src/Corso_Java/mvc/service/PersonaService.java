@@ -3,12 +3,16 @@ package Corso_Java.mvc.service;
 import Corso_Java.mvc.exception.CfException;
 import Corso_Java.mvc.model.Persona;
 import Corso_Java.mvc.model.PersonaRepository;
+import Corso_Java.mvc.model.Repository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 
 public class PersonaService {
     //Gestore repository persona
-    PersonaRepository personaRepository = new PersonaRepository();
+    Repository personaRepository = new PersonaRepository();
 
     //Inserimento di una persona nel database
     public boolean insert(Persona p) {
@@ -26,8 +30,6 @@ public class PersonaService {
 
     //Ricerca una persona nel database e la restituisce
     public Persona search(String cf) { return personaRepository.search(cf);}
-    public int search(Persona p){return personaRepository.search(p);}
-    public Persona getPersona(int index){return personaRepository.getPersona(index);}
 
     //Elimina una persona nel database
     public boolean delete(Persona p) { return personaRepository.delete(p);}
@@ -45,7 +47,7 @@ public class PersonaService {
 
 
     //Ottieni tutte le persone presenti nel database
-    public ArrayList<Persona> getAll()
+    public HashMap<Integer, Persona> getAll()
     {
         return personaRepository.getAll();
     }
