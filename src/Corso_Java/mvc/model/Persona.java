@@ -3,14 +3,13 @@ package Corso_Java.mvc.model;
 import Corso_Java.mvc.utils.Utils;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Persona {
     private String name;
     private String surname;
-    private String codiceFiscale;
-    private LocalDate dataDiNascita;
+    private String fiscalCode;
+    private LocalDate birthday;
     private static int  GlobalID;
     private int id;
 
@@ -18,11 +17,11 @@ public class Persona {
         id = GlobalID++;
     }
 
-    public Persona(String name, String surname, String codiceFiscale,LocalDate dataDiNascita) {
+    public Persona(String name, String surname, String fiscalCode, LocalDate birthday) {
         this.name = name;
         this.surname = surname;
-        this.codiceFiscale = codiceFiscale;
-        this.dataDiNascita = dataDiNascita;
+        this.fiscalCode = fiscalCode;
+        this.birthday = birthday;
     }
 
     public String getName() {
@@ -41,39 +40,39 @@ public class Persona {
         this.surname = surname;
     }
 
-    public String getCodiceFiscale() {
-        return codiceFiscale;
+    public String getFiscalCode() {
+        return fiscalCode;
     }
 
-    public void setCodiceFiscale(String codiceFiscale) {
-        this.codiceFiscale = codiceFiscale;
+    public void setFiscalCode(String fiscalCode) {
+        this.fiscalCode = fiscalCode;
     }
 
-    public LocalDate getDataDiNascita() {
-        return dataDiNascita;
+    public LocalDate getBirthday() {
+        return birthday;
     }
 
-    public void setDataDiNascita(LocalDate dataDiNascita) {
-        this.dataDiNascita = dataDiNascita;
+    public void setBirthday(LocalDate birthday) {
+        this.birthday = birthday;
     }
 
     @Override
     public String toString() {
-        return getID() + " name: " + name + " surname: " + surname +  "codice fiscale: " + codiceFiscale + " data di nascita: " + Utils.formatter(dataDiNascita) + " età: " + Utils.calcolaEta(dataDiNascita);
+        return " ID = " + getID() + " name: " + name + " surname: " + surname +  " codice fiscale: " + fiscalCode + " data di nascita: " + Utils.formatter(birthday) + " età: " + Utils.getAge(birthday);
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Persona persona = (Persona) o;
-        return Objects.equals(getName(), persona.getName()) && Objects.equals(getSurname(), persona.getSurname()) && Objects.equals(getCodiceFiscale(), persona.getCodiceFiscale()) && Objects.equals(getDataDiNascita(), persona.getDataDiNascita());
+        return Objects.equals(getName(), persona.getName()) && Objects.equals(getSurname(), persona.getSurname()) && Objects.equals(getFiscalCode(), persona.getFiscalCode()) && Objects.equals(getBirthday(), persona.getBirthday());
     }
 
 
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getSurname(), getCodiceFiscale(), getDataDiNascita());
+        return Objects.hash(getName(), getSurname(), getFiscalCode(), getBirthday());
     }
 
     public int getID() {

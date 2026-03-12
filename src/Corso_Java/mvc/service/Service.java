@@ -2,46 +2,41 @@ package Corso_Java.mvc.service;
 
 import Corso_Java.mvc.exception.CfException;
 import Corso_Java.mvc.model.Persona;
-import Corso_Java.mvc.model.PersonaRepository;
+import Corso_Java.mvc.model.EntityRepository;
 import Corso_Java.mvc.model.Repository;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 
-public class PersonaService {
+public class Service {
     //Gestore repository persona
-    Repository personaRepository = new PersonaRepository();
+    Repository entityRepository = new EntityRepository();
 
     //Inserimento di una persona nel database
     public boolean insert(Persona p) {
 
-        if(personaRepository.search(p.getCodiceFiscale()) != null)
+        if(entityRepository.search(p.getFiscalCode()) != null)
         {
-            System.out.println("Errore: Codice fiscale già esistente");
             throw  new CfException("Codice fiscale già esistente!");
-
         }
 
-        personaRepository.insert(p);
+        entityRepository.insert(p);
         return true;
     }
 
     //Ricerca una persona nel database e la restituisce
-    public Persona search(String cf) { return personaRepository.search(cf);}
+    public Persona search(String cf) { return entityRepository.search(cf);}
 
     //Elimina una persona nel database
-    public boolean delete(Persona p) { return personaRepository.delete(p);}
+    public boolean delete(Persona p) { return entityRepository.delete(p);}
 
     public boolean update(Persona p,Persona pNew) {
 
-        if(search(pNew.getCodiceFiscale()) != null && !p.getCodiceFiscale().equals(pNew.getCodiceFiscale()))
+        if(search(pNew.getFiscalCode()) != null && !p.getFiscalCode().equals(pNew.getFiscalCode()))
         {
             return false;
         }
 
-        personaRepository.update(p,pNew);
+        entityRepository.update(p,pNew);
         return true;
     }
 
@@ -49,6 +44,6 @@ public class PersonaService {
     //Ottieni tutte le persone presenti nel database
     public HashMap<Integer, Persona> getAll()
     {
-        return personaRepository.getAll();
+        return entityRepository.getAll();
     }
 }

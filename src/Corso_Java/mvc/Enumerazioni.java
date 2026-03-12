@@ -1,11 +1,11 @@
 package Corso_Java.mvc;
 public class   Enumerazioni {
 
-    public enum Ruolo {
+    public enum Role {
         PROJECT_MANAGER,
         TEAM_LEADER,
-        TOP_MENAGER,
-        NONVALIDO
+        TOP_MANAGER,
+        RUOLONONVALIDO
     }
 
     public enum Entities{

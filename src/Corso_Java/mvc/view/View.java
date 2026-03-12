@@ -1,5 +1,6 @@
 package Corso_Java.mvc.view;
 
+import Corso_Java.mvc.Enumerazioni.Role;
 import Corso_Java.mvc.Enumerazioni.Entities;
 import Corso_Java.mvc.exception.EtaException;
 import Corso_Java.mvc.exception.RegexStringException;
@@ -7,13 +8,15 @@ import Corso_Java.mvc.model.Dipendente;
 import Corso_Java.mvc.model.Manager;
 import Corso_Java.mvc.model.Persona;
 import Corso_Java.mvc.utils.Utils;
-import Corso_Java.mvc.utils.Constants.Regex;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static Corso_Java.mvc.Enumerazioni.Entities.*;
+import static Corso_Java.mvc.Enumerazioni.Role.*;
+import static Corso_Java.mvc.utils.Constants.Regex.stringRegex;
+import static Corso_Java.mvc.utils.Utils.*;
 
 public class View {
     private Scanner scanner = new Scanner(System.in);
@@ -30,41 +33,24 @@ public class View {
     /*
        Controlla che la stringa "s" ricevuta in input rispetti la regex. Se non la rispetta lancia un'eccezione.
      */
-    public boolean StringMatch(String regex,String s) throws RegexStringException {
-        if(!s.matches(regex))
-        {
-            throw new RegexStringException("La stringa deve contenere da 3 a 16 caratteri");
-        }
 
-        return true;
-    }
-
-
-    //Legge una stringa e verifica che rispetti. Se la rispetta è restituita la stringa altrimenti viene lanciata un'eccezione
+    //Legge una stringa e verifica che rispetti la regex. Se la rispetta è restituita la stringa altrimenti viene lanciata un'eccezione
     public String readStringRegex(String regola) throws RegexStringException {
-        String regex = Regex.stringRegex;
+        String regex = stringRegex;
         String s = "";
 
         System.out.println(regola);
         s =  scanner.nextLine().trim();
 
-        if (StringMatch(regex,s)) {
-            return s;
-        }
-        return "";
+        return StringMatch(regex,s);
     }
 
 
-    //Restiuisce la data formattata e lancia un'eccezione se la data inserita non ha senso in relazione a quella attuale
-    public LocalDate dataFormatter(String data) throws EtaException {
+    //Restiuisce la data formattata
+    public LocalDate dataFormatter(String data) {
         //Formattazione della data
         DateTimeFormatter dataFormattata = DateTimeFormatter.ofPattern("dd-MM-yyyy",Locale.ITALIAN);
         LocalDate dataDiNascita =  LocalDate.parse(data,dataFormattata);
-
-        //Controllo correttezza
-        if(Utils.calcolaEta(dataDiNascita) < 18 || Utils.calcolaEta(dataDiNascita) >= 100){
-            throw new EtaException("Data non valida");
-        }
 
         return dataDiNascita;
     }
@@ -73,7 +59,27 @@ public class View {
     //Legge la data di nascita inserita dall'utente e la restituisce formattata gg-mm-yyyy
     public LocalDate readDataDiNascita(String s) throws EtaException {
         String lettura = readString(s);
-        return dataFormatter(lettura);
+
+        //Controllo correttezza
+        LocalDate data = dataFormatter(lettura);
+        if(!Utils.checkDataDiNascita(data)){
+            throw new EtaException("La data di nascita inserita non è valida!");
+        }
+
+        return data;
+    }
+
+    //Legge la data di assunzione
+    public LocalDate readDataDiAssunzione(String s,LocalDate dataDiNascita) throws EtaException {
+        String lettura = readString(s);
+        LocalDate dataDiAssunzione = dataFormatter(lettura);
+
+        //Controllo correttezza
+        if(!Utils.checkDataDiAssunzione(dataDiAssunzione,dataDiNascita)){
+            throw new EtaException("La data di assunzione inserita non è valida!");
+        }
+
+        return dataDiAssunzione;
     }
 
 
@@ -95,21 +101,21 @@ public class View {
     public void initForm(Persona p) throws RegexStringException, EtaException {
         p.setName(readStringRegex("Insert the name"));
         p.setSurname(readStringRegex("Insert the surname"));
-        p.setDataDiNascita(readDataDiNascita("Insert the data di nascita: dd--MM-yyyy"));
-        p.setCodiceFiscale(readStringRegex("Insert the codiceFiscale"));
+        p.setBirthday(readDataDiNascita("Insert the data di nascita: dd--MM-yyyy"));
+        p.setFiscalCode(readStringRegex("Insert the codiceFiscale"));
 
         if(p instanceof Manager)
         {
             Manager m = (Manager) p;
-            m.setStipendio(readDouble("Inserisci lo stipendio"));
+            m.setSalary(readDouble("Inserisci lo stipendio"));
             m.setBonus(readDouble("Inserisci il bonus del Manager"));
-            m.setDataDiAssunzione(readDataDiNascita("Inserisci la data di assunzione"));
-            m.setTipoRuolo(Utils.getRuolo(readString("Inserisci il ruolo")));
+            m.setHiringData(readDataDiAssunzione("Inserisci la data di assunzione",p.getBirthday()));
+            m.setRoleType(roleManagerMenu("Inserisci il tipo di ruolo ricoperto "));
         }else if(p instanceof Dipendente)
         {
             Dipendente d = (Dipendente) p;
-            d.setDataDiAssunzione(readDataDiNascita("Inserisci la data di assunzione"));
-            d.setStipendio(readDouble("Inserisci lo stipendio"));
+            d.setHiringData(readDataDiAssunzione("Inserisci la data di assunzione",p.getBirthday()));
+            d.setSalary(readDouble("Inserisci lo stipendio"));
         }
     }
 
@@ -139,12 +145,26 @@ public class View {
         System.out.println("DIPENDENTE");
         System.out.println("MANAGER");
 
-        switch (readString("Inserisci il tipo di entità che vuoi inserire").toUpperCase()){
-            case "PERSONA" : return PERSONA;
-            case "DIPENDENTE" : return DIPENDENTE;
-            case "MANAGER" : return MANAGER;
-            default: return NONVALIDO;
-        }
+        return switch (readString(s).toUpperCase()) {
+            case "PERSONA" -> PERSONA;
+            case "DIPENDENTE" -> DIPENDENTE;
+            case "MANAGER" -> MANAGER;
+            default -> NONVALIDO;
+        };
+    }
+
+    public Role roleManagerMenu(String s)
+    {
+        System.out.println(PROJECT_MANAGER);
+        System.out.println(TEAM_LEADER);
+        System.out.println(TOP_MANAGER);
+
+        return switch (readString(s).toUpperCase()) {
+            case "PROJECT_MANAGER" -> PROJECT_MANAGER;
+            case "TEAM_LEADER" -> TEAM_LEADER;
+            case "TOP_MANAGER" -> TOP_MANAGER;
+            default -> RUOLONONVALIDO;
+        };
     }
 
 
@@ -163,43 +183,95 @@ public class View {
     }
 
 
-    //Permette all'utente di modificare uno piu campi della persona "p" restiuendo la nuova persona modificata "newP"
+    /*
+        Permette all'utente di modificare una qualsiasi entità.
+        Le modifiche sono diverse in base al tipo di persona passato
+        Per non modificare un campo l'utente preme invio. -> (field.isEmpty())
+     */
     //TODO:MODIFICARE TUTTO
     public Persona formUpdate(Persona p,Persona newP) throws RegexStringException, EtaException {
-        //Preparazione dati
-        String[] label = new String[]{"name ","surname","codice fiscale","data di nascita"};
-        String[] data = new String[]{p.getName(),p.getSurname(), p.getCodiceFiscale()};
-        LocalDate dataDiNascita = p.getDataDiNascita();
+        String field;
+        LocalDate data;
+        //Modifica Nome
+        field = readString(" name: [ " + p.getName() + " ] ");
+        newP.setName(field.isEmpty() ? p.getName() : StringMatch(stringRegex,field)); //Se il campo inserito dall' utente è vuoto -> mantengo il campo vecchio. Altrimenti sovrascrivo con il campo inserito
 
-        int s = 0;
+        //Modifica cognome
+        field = readString(" surname: [ " + p.getSurname() + " ] ");
+        newP.setSurname(field.isEmpty() ? p.getSurname() : StringMatch(stringRegex,field));
 
-        //Scorro i dati
-        for(Object d : data)
+        //Modifica data di nascita
+        field = readString(" birthday: [ " + Utils.formatter(p.getBirthday()) + " ] ");
+        newP.setBirthday(field.isEmpty() ? p.getBirthday() : dataFormatter(field));
+
+        //Modifica codice fiscale
+        field = readString(" fiscal code: [ " + p.getFiscalCode() + " ] ");
+        newP.setFiscalCode(field.isEmpty() ? p.getFiscalCode() : StringMatch(stringRegex,field));
+
+        //Verifico il tipo di entità
+        switch (Utils.getTypeOfEntity(newP))
         {
-            //L'utente inserisce la modifica
-            String h = this.readString(label[s] + ": " +  "[" + d + "]");
-            //Se la modifica inserita non è vuota allora il campo viene modificato
-            if(!h.isEmpty() && StringMatch("^[a-zA-Z0-9]{3,16}$",h)){
-                data[s] = h;
-            }
+            case "MANAGER":
+                print("Sezione Manager");
+                //newM -> nuovo manager m -> vecchio manager
+                Manager newM = (Manager) newP;
+                Manager m = (Manager) p;
 
-            //Passo al dato successivo
-            s+=1;
+                //Modifica stipendio
+                field = readString(" salary: [ " + m.getSalary() + " ] ");
+                newM.setSalary(field.isEmpty() ? m.getSalary() : Double.parseDouble(field));
+
+                //Modifica bonus
+                field = readString(" bonus: [ " + m.getBonus() + " ] ");
+                newM.setBonus(field.isEmpty() ? m.getBonus() : Double.parseDouble(field));
+
+                //Modifica data di assunzione
+                field = readString(" day of hiring: [ " + Utils.formatter(m.getHiringData()) + " ] ");
+                //Assegnazione di data
+                if(field.isEmpty()){data = m.getHiringData();}
+                else{
+                    data = dataFormatter(field);
+                }
+                //In qualsiasi caso devo verificare che la modifica sia corretta
+                if(!checkDataDiAssunzione(data,newM.getBirthday())){ throw new EtaException("La data di assunzione inserita: " + data + " non è coerente con la data di nascita: " + newM.getBirthday());}
+                newM.setHiringData(data);
+
+                //Modifica Ruolo
+                field = readString(" role type [ " + m.getRoleType() + " ] ");
+                newM.setRoleType(field.isEmpty() ? m.getRoleType() : getRuolo(field));
+                break;
+
+            case "DIPENDENTE":
+                print("Sezione Dipendente");
+                //newD -> nuovo dipendente d -> vecchio dipendente
+                Dipendente newD = (Manager) newP;
+                Dipendente d = (Manager) p;
+
+                //Modifica stipendio
+                field = readString(" salary: [ " + d.getSalary() + " ] ");
+                newD.setSalary(field.isEmpty() ? d.getSalary() : Double.parseDouble(field));
+
+                //Modifica data di assunzione
+                field = readString(" day of hiring: [ " + Utils.formatter(d.getHiringData()) + " ] ");
+                //Assegnazione di data
+                if(field.isEmpty()){data = d.getHiringData();}
+                else{
+                    data = dataFormatter(field);
+                }
+                //In qualsiasi caso devo verificare che la modifica sia corretta
+                if(!checkDataDiAssunzione(data,newD.getBirthday())){ throw new EtaException("La data di assunzione inserita: " + data + " non è coerente con la data di nascita: " + newD.getBirthday());}
+                newD.setHiringData(data);
+                break;
+
         }
 
-        //data di nascita
-        String h = this.readString(label[3] + ": " +  "[" + Utils.formatter(dataDiNascita) + "]");
-        if(!h.isEmpty()){
-            dataDiNascita = dataFormatter(h);
-        }
-
-        //L'utente può decidere di non rendere le modifiche permanenti
-        if(this.readString("Sicuro di voler apportare la modifica? s/n").equals("s")){
-            //Costruisco il nuovo oggetto da sostituire
-            newP = new Persona((String) data[0],(String)data[1],(String) data[2],dataDiNascita);
-            //Effettuo una ricerca sulla persona p che me ne restituisce l'indice
+        //L'utente è sicuro di voler modificare l'entità?
+        if(readString("Sicuro di voler rendere permanenti le modifiche? s/n").equals("s"))
+        {
             return newP;
         }
+
+
         return null;
     }
 }

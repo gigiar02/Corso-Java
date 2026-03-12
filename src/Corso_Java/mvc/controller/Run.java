@@ -1,20 +1,21 @@
 package Corso_Java.mvc.controller;
 
+import Corso_Java.mvc.exception.EntityException;
 import Corso_Java.mvc.exception.EtaException;
 import Corso_Java.mvc.exception.RegexStringException;
 import Corso_Java.mvc.utils.MakeEntity;
 import Corso_Java.mvc.model.Persona;
-import Corso_Java.mvc.service.PersonaService;
-import Corso_Java.mvc.utils.Utils;
+import Corso_Java.mvc.service.Service;
 import Corso_Java.mvc.view.View;
 
 import java.time.format.DateTimeParseException;
 
 public class Run {
 
-     static void main() {PersonaService serv = new PersonaService();
-        View view = new View();
-        Persona p;
+     static void main() {
+         Service serv = new Service();
+         View view = new View();
+         Persona p;
 
         while (true)
         {
@@ -24,16 +25,20 @@ public class Run {
                     case 0:
                         return;
 
-                    //Inserisci una persona
+                    //Inserisci un' entità
                     case 1:
                         String msg = "";
 
+                        //Viene avviato un menu attraverso il quale l'utente può scegliere il tipo di entità da aggiungere
+                        //GetEntity restituisce il tipo di entità scelto
                         p = MakeEntity.GetEntity(view.menuInserimento("Inserisci il tipo di entità che vuoi aggiungere"));
+                        if(p == null){throw new EntityException("Tipo di entità non valido");}
 
+                        //L'utente deve riempire i campi dell'entità scelta
                         view.initForm(p);
-                        msg = serv.insert(p) ? "Persona inserita" + p : "Persona non inserita";
 
-
+                        //Verifica risultato operazione di inserimento
+                        msg = serv.insert(p) ? "Persona inserita" : "Persona non inserita";
                         view.print(msg);
                         break;
 
@@ -50,7 +55,7 @@ public class Run {
 
                     //Elimina una persona attraverso il suo codice fiscaele
                     case 4:
-                        p = serv.search(view.readString("Inserisci il codice fiscale da leggere"));
+                        p = serv.search(view.readString("Inserisci il codice fiscale"));
 
                         if (p == null) {
                             view.print("Persona non esistente ");
@@ -97,7 +102,7 @@ public class Run {
                     default:
                         view.print("Scelta non valida");
                 }
-            }catch (NumberFormatException | RegexStringException |EtaException E)
+            }catch (NumberFormatException | RegexStringException | EtaException | EntityException E)
             {
                 view.print("Errore: " + E.getMessage());
             }catch (DateTimeParseException E)

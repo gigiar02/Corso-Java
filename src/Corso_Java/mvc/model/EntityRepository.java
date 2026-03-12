@@ -2,10 +2,10 @@ package Corso_Java.mvc.model;
 
 import java.util.*;
 
-public class PersonaRepository implements Repository {
+public class EntityRepository implements Repository {
      HashMap<Integer,Persona> entity = new HashMap<Integer,Persona>();
 
-     public PersonaRepository(){}
+     public EntityRepository(){}
     //Inserisce una persona nel database
     public boolean insert(Persona p)
     {
@@ -14,12 +14,11 @@ public class PersonaRepository implements Repository {
     }
 
     //Ricerca una persona nel database
-    //TODO: IMPLEMENTARE RICERCA TRAMITE ID
     public Persona search(String cf)
     {
         for(Map.Entry<Integer,Persona> e : entity.entrySet())
         {
-            if(e.getValue().getCodiceFiscale().equals(cf)) {return e.getValue();}
+            if(e.getValue().getFiscalCode().equals(cf)) {return e.getValue();}
         }
 
         return null;
@@ -36,8 +35,6 @@ public class PersonaRepository implements Repository {
 
     public void update(Persona p,Persona pNew) {
         entity.put(p.getID(),pNew);
-
-        //persone.set(persone.indexOf(p),pNew);
     }
 
     public HashMap<Integer, Persona> getAll()

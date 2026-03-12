@@ -13,6 +13,7 @@ public  class MakeEntity {
         return switch (e){
             case MANAGER -> new Manager();
             case DIPENDENTE -> new Dipendente();
+            case PERSONA -> new Persona();
             default -> null;
         };
     }
