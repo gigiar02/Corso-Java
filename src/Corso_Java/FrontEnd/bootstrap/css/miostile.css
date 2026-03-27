@@ -1,0 +1,50 @@
+.disegna{
+
+height: 200px;
+border:1px solid red;
+
+
+}
+
+.navbar-brand img
+{
+    width: 150px;
+
+}
+
+
+.bg-body-tertiary {
+  
+    background-color: #000000cf !important;
+}
+
+
+.navbar-nav .nav-link.active, .navbar-nav .nav-link.show {
+    color: rgb(230 26 39);
+}
+
+.nav-link {
+    color: rgb(230 26 39);
+   
+}
+
+.linkpers{
+    background-color: red;
+    padding: 5px;
+    border-radius: 17px;
+    margin-left: 10%;
+    color: white !important;
+    font-size: 18px;
+    width: 90px;
+    text-align: center;
+
+}
+
+.area_tesla{
+    background-color: rgb(97, 85, 85);
+}
+
+.area_tesla .text_title{
+    background-color: rgb(255, 255, 255);
+    border-radius: 15px;
+}
